@@ -34,7 +34,6 @@
                              :type :stream
                              :protocol :tcp
                              :descriptor fd)))
-    (format t "what the ~A~%" (sb-bsd-sockets::socket-file-descriptor sock))
     (usocket::make-stream-server-socket sock :element-type element-type)))
 
 (defun socket-listen (host port
@@ -58,7 +57,6 @@
         (usocket:with-mapped-conditions ()
           (setf (sb-bsd-sockets:sockopt-reuse-address sock) reuseaddress)
           (sb-bsd-sockets:socket-bind sock ip port)
-          (format t "before the ~A~%" (sb-bsd-sockets::socket-file-descriptor sock))
           (sb-bsd-sockets:socket-listen sock backlog)
           (let ((fd (sb-bsd-sockets::socket-file-descriptor sock)))
             (listen-on-fd fd :element-type element-type)))
