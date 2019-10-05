@@ -19,12 +19,12 @@ hunchentoot acceptors:
 
 ```lisp
 (defvar *tdrhq-acceptor* (make-instance 'hunchentoot:easy-acceptor
-                                         :port 3008
+                                         :port nil
                                          :name 'tdrhq))
 
 (defvar *jipr-acceptor*
   (make-instance 'hunchentoot:easy-acceptor
-                 :port 3009
+                 :port nil
                  :name 'jipr))
 ```
 
@@ -47,7 +47,7 @@ At this point, you can configure your Nginx frontend for both websites
 to point to `localhost:4001`. Make sure the "Host" header is
 appropriately set. (`proxy_set_header Host $host:$server_port`). After
 that hunchentoot-multi-acceptor will take care of routing to the
-appropriate acceptor.
+appropriate acceptor. Only one port will be opened.
 
 ## License
 
