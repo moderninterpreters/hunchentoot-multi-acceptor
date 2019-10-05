@@ -6,6 +6,8 @@
   :license  "Apache License, Version 2.0"
   :version "0.0.1"
   :serial t
-  :depends-on (#:hunchentoot)
+  :depends-on (#:hunchentoot
+               #:usocket
+               #:str)
   :components ((:file "package")
                (:file "hunchentoot-multi-acceptor")))
