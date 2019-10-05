@@ -86,5 +86,5 @@
 ;; (setf *ma* (make-instance 'multi-acceptor :port 5001))
 ;; (start *ma*)
 
-(defun add-sub-acceptor (multi-acceptor host acceptor)
+(defun add-acceptor (multi-acceptor host acceptor)
   (push (cons host acceptor) (sub-acceptors multi-acceptor)))
