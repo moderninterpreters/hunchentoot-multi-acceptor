@@ -1,7 +1,8 @@
 ;;;; package.lisp
 
 (defpackage #:hunchentoot-multi-acceptor
-  (:use #:cl)
+  (:use #:cl
+        #:hunchentoot)
   (:export #:multi-acceptor
            #:*default-acceptor*
            :listen-fd
