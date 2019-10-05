@@ -37,8 +37,8 @@ Now, we have a multi-acceptor setup as follows:
 
 ```lisp
 (defparameter *multi-acceptor* (make-instance 'hunchentoot-multi-acceptor:multi-acceptor :port 4001 :name 'multi-acceptor))
-(hunchentoot-multi-acceptor:add-acceptor *multi-acceptor* "tdrhq.com" colada::*colada-acceptor*)
-(hunchentoot-multi-acceptor:add-acceptor *multi-acceptor* "www.jipr.io" jipr:*jipr-acceptor*)
+(hunchentoot-multi-acceptor:add-acceptor *multi-acceptor* "tdrhq.com" *tdrhq-acceptor*)
+(hunchentoot-multi-acceptor:add-acceptor *multi-acceptor* "www.jipr.io" *jipr-acceptor*)
 
 (hunchentoot:start *multi-acceptor*)
 ```
