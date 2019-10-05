@@ -1,4 +1,4 @@
-;;;; hunchentoot-multi-acceptor.lisp
+;;;; Copyright 2019 Modern Interpreters Inc.
 
 (in-package #:hunchentoot-multi-acceptor)
 

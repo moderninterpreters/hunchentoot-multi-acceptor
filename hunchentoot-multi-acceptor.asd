@@ -1,4 +1,4 @@
-;;;; hunchentoot-multi-acceptor.asd
+;; Copyright 2019 Modern Interpreters Inc.
 
 (asdf:defsystem #:hunchentoot-multi-acceptor
   :description "Multiple domain support under single hunchentoot acceptor"
