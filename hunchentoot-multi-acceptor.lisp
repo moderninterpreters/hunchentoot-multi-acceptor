@@ -69,11 +69,12 @@
        (call-next-method)))))
 
 (defun listen-on-fd (fd &key element-type)
-  (let ((sock (make-instance 'sb-bsd-sockets:inet-socket
-                             :type :stream
+  #+sbcl(let ((sock (make-instance 'sb-bsd-sockets:inet-socket
+                                   :type :stream
                              :protocol :tcp
                              :descriptor fd)))
-    (usocket::make-stream-server-socket sock :element-type element-type)))
+          (usocket::make-stream-server-socket sock :element-type element-type))
+  #-sbcl (error "Can't listen on file descriptor; this feature is only supported on SBCL currently. It's a specific feature used to restart the webserver without downtime, but in most cases you don't need this."))
 
 
 (defmethod start-listening ((acceptor multi-acceptor))
