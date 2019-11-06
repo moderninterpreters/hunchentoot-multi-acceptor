@@ -75,35 +75,6 @@
                              :descriptor fd)))
     (usocket::make-stream-server-socket sock :element-type element-type)))
 
-(defun socket-listen (host port
-                           &key reuseaddress
-                           (reuse-address nil reuse-address-supplied-p)
-                           (backlog 5)
-                           (element-type 'character))
-  (let* ((local (when host
-                  (car (usocket:get-hosts-by-name (usocket:host-to-hostname host)))))
-         (ipv6 (and local (= 16 (length local))))
-         (reuseaddress (if reuse-address-supplied-p reuse-address reuseaddress))
-         (ip (if (and local (not (eq host usocket:*wildcard-host*)))
-                 local
-                 (usocket:hbo-to-vector-quad sb-bsd-sockets-internal::inaddr-any)))
-         (sock (make-instance (if ipv6
-                                         'sb-bsd-sockets::inet6-socket
-                                         'sb-bsd-sockets:inet-socket)
-                              :type :stream
-                              :protocol :tcp)))
-    (handler-case
-        (usocket:with-mapped-conditions ()
-          (setf (sb-bsd-sockets:sockopt-reuse-address sock) reuseaddress)
-          (sb-bsd-sockets:socket-bind sock ip port)
-          (sb-bsd-sockets:socket-listen sock backlog)
-          (let ((fd (sb-bsd-sockets::socket-file-descriptor sock)))
-            (listen-on-fd fd :element-type element-type)))
-
-      (t (c)
-        ;; Make sure we don't leak filedescriptors
-        (sb-bsd-sockets:socket-close sock)
-        (error c)))))
 
 (defmethod start-listening ((acceptor multi-acceptor))
   (when (hunchentoot::acceptor-listen-socket acceptor)
@@ -112,7 +83,7 @@
         (cond
           ((listen-fd acceptor)
            (listen-on-fd (listen-fd acceptor) :element-type '(unsigned-byte 8)))
-          (t (socket-listen (or (acceptor-address acceptor)
+          (t (usocket:socket-listen (or (acceptor-address acceptor)
                                  usocket:*wildcard-host*)
                              (acceptor-port acceptor)
                              :reuseaddress t
