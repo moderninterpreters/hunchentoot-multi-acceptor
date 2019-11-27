@@ -60,8 +60,7 @@
         do (return-from process-request
              (let* ((*acceptor* (cdr sub))
                     (*request* (copy-request request *acceptor*)))
-               (format t "looking at ~a~%" *acceptor*)
-               (call-next-method))))
+               (call-next-method *request*))))
 
      (format t "oops, nothing available for ~a~%" host)
      ;; for whatever reason this doesn't work at this point. :(
