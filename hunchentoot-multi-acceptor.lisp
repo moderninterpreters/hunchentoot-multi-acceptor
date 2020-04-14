@@ -76,6 +76,7 @@
   #-sbcl (error "Can't listen on file descriptor; this feature is only supported on SBCL currently. It's a specific feature used to restart the webserver without downtime, but in most cases you don't need this."))
 
 
+#-lispworks
 (defmethod start-listening ((acceptor multi-acceptor))
   (when (hunchentoot::acceptor-listen-socket acceptor)
     (hunchentoot-error "acceptor ~A is already listening" acceptor))
