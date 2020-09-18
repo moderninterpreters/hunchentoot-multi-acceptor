@@ -96,4 +96,7 @@
 ;; (start *ma*)
 
 (defun add-acceptor (multi-acceptor host acceptor)
-  (push (cons host acceptor) (sub-acceptors multi-acceptor)))
+  (setf (alexandria:assoc-value
+         (sub-acceptors multi-acceptor)
+         host :test 'equal)
+        acceptor))

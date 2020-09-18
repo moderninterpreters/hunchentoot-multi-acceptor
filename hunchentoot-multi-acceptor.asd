@@ -8,6 +8,7 @@
   :serial t
   :depends-on (#:hunchentoot
                #:usocket
+               #:alexandria
                #:str)
   :components ((:file "package")
                (:file "hunchentoot-multi-acceptor")))
