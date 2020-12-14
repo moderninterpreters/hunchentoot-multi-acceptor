@@ -11,10 +11,8 @@
               :initform nil
               :accessor listen-fd)))
 
-(defmethod  make-instance ((class (eql 'multi-acceptor)) &rest args)
-  (let ((ret (call-next-method)))
-    (setf (acceptor-request-class ret) 'multi-request)
-    ret))
+(defmethod initialize-instance :after ((acceptor multi-acceptor) &key &allow-other-keys)
+  (setf (acceptor-request-class acceptor) 'multi-request))
 
 (defparameter *default-acceptor*
   (make-instance 'hunchentoot:easy-acceptor
@@ -54,7 +52,7 @@
 
 (defmethod process-request ((request multi-request))
   (let ((acceptor (request-acceptor request)))
-   (let ((host (car (str:split ":" (host request)))))
+    (let ((host (car (str:split ":" (host request)))))
      (loop for sub in (sub-acceptors acceptor)
         if (equal (car sub) host)
         do (return-from process-request
