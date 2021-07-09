@@ -14,10 +14,13 @@
 (defmethod initialize-instance :after ((acceptor multi-acceptor) &key &allow-other-keys)
   (setf (acceptor-request-class acceptor) 'multi-request))
 
-(defparameter *default-acceptor*
+(defvar *default-acceptor*
   (make-instance 'hunchentoot:easy-acceptor
                  :port 1
                  :name 'default-acceptor))
+
+(hunchentoot:define-easy-handler (default-route :uri "/" :acceptor-names (list 'default-acceptor)) ()
+  "Default Acceptor")
 
 ;; (define-easy-handler (s-default-message :uri "/foo" :acceptor-names '(default-acceptor)) ()
 ;;   (format nil "error, hostname not set up for: ~a" (host *request*)))
@@ -51,19 +54,19 @@
                   :content-stream nil)) (make-instance 'acceptor))
 
 (defmethod process-request ((request multi-request))
-  (let ((acceptor (request-acceptor request)))
-    (let ((host (car (str:split ":" (host request)))))
-     (loop for sub in (sub-acceptors acceptor)
-        if (equal (car sub) host)
-        do (return-from process-request
-             (let* ((*acceptor* (cdr sub))
-                    (*request* (copy-request request *acceptor*)))
-               (call-next-method *request*))))
+   (flet ((dispatch-acceptor (acceptor)
+            (return-from process-request
+              (let* ((*acceptor* acceptor)
+                     (*request* (copy-request request *acceptor*)))
+                (process-request *request*)))))
 
-     (format t "oops, nothing available for ~a~%" host)
-     ;; for whatever reason this doesn't work at this point. :(
-     (let ((*acceptor* *default-acceptor*))
-       (call-next-method)))))
+   (let ((acceptor (request-acceptor request)))
+     (let ((host (car (str:split ":" (host request)))))
+       (loop for sub in (sub-acceptors acceptor)
+             if (equal (car sub) host)
+               do (dispatch-acceptor (cdr sub)))
+
+       (dispatch-acceptor *default-acceptor*)))))
 
 (defun listen-on-fd (fd &key element-type)
   #+sbcl(let ((sock (make-instance 'sb-bsd-sockets:inet-socket
